@@ -1,9 +1,18 @@
-import { Switch, Route } from "react-router-dom";
-import Header from "./Header";
-import Vendor from "./Vendor";
-import Home from "./Home";
+import React, { useState, useEffect } from 'react';
+import { Switch, Route } from 'react-router-dom';
+import Header from './Header';
+import Vendor from './Vendor';
+import Home from './Home';
 
 function App() {
+  const [vendors, setVendors] = useState([]);
+
+  useEffect(() => {
+    fetch('/vendors')
+      .then(response => response.json())
+      .then(data => setVendors(data));
+  }, []);
+
   return (
     <div>
       <Header />
@@ -13,7 +22,7 @@ function App() {
             <Vendor />
           </Route>
           <Route exact path="/">
-            <Home />
+            <Home vendors={vendors} />
           </Route>
         </Switch>
       </main>

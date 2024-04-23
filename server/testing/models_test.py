@@ -1,5 +1,5 @@
 import pytest
-from app import app
+from server.app import app
 from models import db, Sweet, Vendor, VendorSweet
 from faker import Faker
 

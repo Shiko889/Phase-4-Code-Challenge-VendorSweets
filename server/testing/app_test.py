@@ -2,7 +2,7 @@ import json
 from os import environ
 from flask import request
 from faker import Faker
-from app import app
+from server.app import app
 from models import db, Sweet, Vendor, VendorSweet
 from random import randint
 

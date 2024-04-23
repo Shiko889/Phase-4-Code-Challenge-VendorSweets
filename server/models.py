@@ -1,55 +1,22 @@
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import MetaData
-from sqlalchemy.orm import validates
-from sqlalchemy.ext.associationproxy import association_proxy
-from sqlalchemy_serializer import SerializerMixin
+from sqlalchemy.orm import relationship
 
-metadata = MetaData(naming_convention={
-    "fk": "fk_%(table_name)s_%(column_0_name)s_%(referred_table_name)s",
-})
+db = SQLAlchemy()
 
-db = SQLAlchemy(metadata=metadata)
-
-
-class Sweet(db.Model, SerializerMixin):
-    __tablename__ = 'sweets'
-
+class Vendor(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String(100), nullable=False)
+    vendor_sweets = relationship("VendorSweet", back_populates="vendor", cascade="all, delete")
 
-    # Add relationship
-    
-    # Add serialization
-    
-    def __repr__(self):
-        return f'<Sweet {self.id}>'
-
-
-class Vendor(db.Model, SerializerMixin):
-    __tablename__ = 'vendors'
-
+class Sweet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String)
+    name = db.Column(db.String(100), nullable=False)
+    vendor_sweets = relationship("VendorSweet", back_populates="sweet", cascade="all, delete")
 
-    # Add relationship
-    
-    # Add serialization
-    
-    def __repr__(self):
-        return f'<Vendor {self.id}>'
-
-
-class VendorSweet(db.Model, SerializerMixin):
-    __tablename__ = 'vendor_sweets'
-
+class VendorSweet(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    price = db.Column(db.Integer, nullable=False)
-
-    # Add relationships
-    
-    # Add serialization
-    
-    # Add validation
-    
-    def __repr__(self):
-        return f'<VendorSweet {self.id}>'
+    price = db.Column(db.Float, nullable=False)
+    vendor_id = db.Column(db.Integer, db.ForeignKey('vendor.id'), nullable=False)
+    sweet_id = db.Column(db.Integer, db.ForeignKey('sweet.id'), nullable=False)
+    vendor = relationship("Vendor", back_populates="vendor_sweets")
+    sweet = relationship("Sweet", back_populates="vendor_sweets")
